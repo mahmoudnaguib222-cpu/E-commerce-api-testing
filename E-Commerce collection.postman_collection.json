@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "18758687-2200-42db-9fda-effa9845cc79",
+		"name": "E-Commerce collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "50835937",
+		"_collection_link": "https://mahmoudnaguib365-371386.postman.co/workspace/858d7014-6b93-43d5-8320-96c275ed2e25/collection/50835937-18758687-2200-42db-9fda-effa9845cc79?action=share&source=collection_link&creator=50835937"
+	},
+	"item": [
+		{
+			"name": "get all products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"    pm.expect(pm.response.json()).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Each product has id, title, price\", function () {\r",
+							"    const products = pm.response.json();\r",
+							"    products.forEach(p => {\r",
+							"        pm.expect(p).to.have.property(\"id\");\r",
+							"        pm.expect(p).to.have.property(\"title\");\r",
+							"        pm.expect(p).to.have.property(\"price\");\r",
+							"    });\r",
+							"});\r",
+							"const products = pm.response.json();\r",
+							"pm.environment.set(\"productId\", products[0].id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakestoreapi.com/products",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product has required fields\", function () {\r",
+							"    const product = pm.response.json();\r",
+							"    pm.expect(product).to.have.property(\"id\");\r",
+							"    pm.expect(product).to.have.property(\"title\");\r",
+							"    pm.expect(product).to.have.property(\"price\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakestoreapi.com/products/{{productId}} ",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products",
+						"{{productId}} "
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Creat product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status is 200 or 201\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+							"});\r",
+							"const res = pm.response.json();\r",
+							"pm.environment.set(\"createdProductId\", res.id);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"New QA Test Product\",\r\n  \"price\": 199.99,\r\n  \"description\": \"This is a test product created by Postman\",\r\n  \"image\": \"https://i.pravatar.cc\",\r\n  \"category\": \"electronics\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/products",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Product by ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://fakestoreapi.com/products/{{createdProductId}}",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products",
+						"{{createdProductId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product updated\", () => {\r",
+							"    const res = pm.response.json();\r",
+							"    pm.expect(res.title).to.eql(\"Updated QA Product\");\r",
+							"    pm.expect(res.price).to.eql(149.99);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"title\": \"Updated QA Product\",\r\n  \"price\": 149.99,\r\n  \"description\": \"Updated description for QA test\",\r\n  \"image\": \"https://i.pravatar.cc\",\r\n  \"category\": \"electronics\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://fakestoreapi.com/products/{{createdProductId}}",
+					"protocol": "https",
+					"host": [
+						"fakestoreapi",
+						"com"
+					],
+					"path": [
+						"products",
+						"{{createdProductId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
